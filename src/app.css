@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.add {
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1.25rem;
+    color: #fff;
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    cursor: pointer;
+}
