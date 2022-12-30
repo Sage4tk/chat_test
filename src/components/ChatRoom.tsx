@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 interface ChatRoomProp {
     chat: number | null,
-    setChat: Function
+    setChat: Function,
+    socket: Socket,
+    token: string | null
 }
 
-const socket = io("");
-
-const ChatRoom:React.FC<ChatRoomProp> = ({ chat, setChat }) => {
+const ChatRoom:React.FC<ChatRoomProp> = ({ 
+    chat, 
+    setChat, 
+    socket, 
+    token 
+}) => {
 
     // messages
     const [message, setMessage] = useState<object[]>([]);
@@ -28,16 +33,8 @@ const ChatRoom:React.FC<ChatRoomProp> = ({ chat, setChat }) => {
         // emit to backend
         socket.emit("message", {
             message: text,
-            token: ""
+            token
         });
-
-        //add text
-            setMessage([
-            ...message,
-            {
-                message: text
-            }
-        ]);
 
         // clear text input
         setText("");
@@ -47,7 +44,6 @@ const ChatRoom:React.FC<ChatRoomProp> = ({ chat, setChat }) => {
         //emit to join a room
         socket.emit("join room", {
             room_id: chat,
-
         });
 
         //set data
@@ -59,10 +55,20 @@ const ChatRoom:React.FC<ChatRoomProp> = ({ chat, setChat }) => {
         });
     }, []);
 
+    // LEAVE ROOM
+    const leaveRoom = () => {
+        setChat(null);
+        
+        // emit leave with the room
+        socket.emit("leave", {
+            room_id: chat
+        });
+    }
+
     return (
         <>
         <div>
-            <button onClick={() => {setChat(null)}}>Back</button>
+            <button onClick={leaveRoom}>Back</button>
             <p>{chat}</p>
         </div>
         <div>

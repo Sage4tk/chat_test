@@ -10,11 +10,6 @@ import useFetch from './hooks/useFetch'
 
 
 const App = () => {
-  //get rooms
-  // const rooms = useFetch("", {
-      
-  // });
-
   // token
   const [token, setToken] = useState<string |null>(null);
 

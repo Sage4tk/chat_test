@@ -1,13 +1,20 @@
 import { useState } from "react";
 import useFetch from "../hooks/useFetch";
 
+// components
+import CreateModal from "./CreateModal";
+
 interface ChatRoomProps {
     token: String | null,
     rooms: object[],
-    setChat: Function
+    setChat: Function,
+    socket: any
 }
 
 const ChatList:React.FC<ChatRoomProps> = ({ rooms, setChat }) => {
+
+    // create modal
+    const [create, setCreate] = useState<boolean>(false);
 
     return (
         <>
@@ -22,8 +29,9 @@ const ChatList:React.FC<ChatRoomProps> = ({ rooms, setChat }) => {
                     </div>
                 ))}
             </div>
-            <div className="add">+</div>
+            <div className="add" onClick={() => {setCreate(true)}}>+</div>
         </div>
+        <CreateModal create={create} setCreate={setCreate} />
         </>
     )
 }
