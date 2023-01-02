@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 
 interface ChatRoomProp {
@@ -15,11 +15,16 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
     token 
 }) => {
 
+    // auto scroll
+    const scrollRef:any = useRef(null);
+
     // messages
     const [message, setMessage] = useState<object[]>([]);
 
     useEffect(() => {
-        console.log("MESSAGE >>>",message);
+        scrollRef.current.scrollIntoView({
+            behavior: "smooth"
+        });
     }, [message])
 
     // text form
@@ -70,6 +75,8 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
             console.log("RECEIVED DATA",data);
 
             setMessage((current) => [...current, ...data.messages]);
+            
+            
         });
     }, [socket])
 
@@ -92,10 +99,12 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
                         <div>{data.message}</div>
                     </div>
                 ))}
+                <div ref={scrollRef} ></div>
             </div>
             <form className="chat__form" onSubmit={sendText}>
                 <input value={text} onChange={textListener} />
                 <input value="send" type="submit" />
+                
             </form>
         </div>
         </>
