@@ -13,12 +13,14 @@ interface MainProps {
     setToken: Function
 }
 
-const socket = io("ws://localhost:5050");
+
 
 const Main:React.FC<MainProps> = ({
     token,
     setToken
 }) => {
+
+    const socket = io("ws://localhost:5050");
 
     const [room, setRoom] = useState<object[]>([]);
 
@@ -30,11 +32,12 @@ const Main:React.FC<MainProps> = ({
         });
 
         socket.on("chat page", data => {
+
             // set roooms
-            setToken(data);
+            setRoom(data);
         })
     
-    });
+    }, []);
 
     //current room
     const [chat, setChat] = useState<number | null>(null);

@@ -25,7 +25,7 @@ const ChatList:React.FC<ChatRoomProps> = ({ rooms, setChat }) => {
             <div>
                 {rooms && rooms.map((data:any) => (
                     <div key={data.room_id} onClick={() => {setChat(data.room_id)}}>
-                        <h2>{data.room_id}</h2>
+                        <h2>{`${data.with.user_id.first_name} ${data.with.user_id.last_name}`}</h2>
                     </div>
                 ))}
             </div>

@@ -18,6 +18,10 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
     // messages
     const [message, setMessage] = useState<object[]>([]);
 
+    useEffect(() => {
+        console.log("MESSAGE >>>",message);
+    }, [message])
+
     // text form
     const [text, setText] = useState<string>("");
 
@@ -33,7 +37,8 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
         // emit to backend
         socket.emit("message", {
             message: text,
-            token
+            token,
+            room_id: chat
         });
 
         // clear text input
@@ -42,27 +47,35 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
 
     useEffect(() => {
         //emit to join a room
-        socket.emit("join room", {
+        socket.emit("join", {
             room_id: chat,
         });
 
+        socket.on('error', data => {
+            console.log(data);
+        })
+
+        return () => {
+            socket.emit("leave", {
+                room_id:chat
+            });
+        }
+    }, [socket]);
+
+    // use EFFECT FOR GETTING MESSAGES
+    useEffect(() => {
         //set data
         socket.on("message", data => {
-           setMessage([
-            ...message,
-            data
-           ]);
+
+            console.log("RECEIVED DATA",data);
+
+            setMessage((current) => [...current, ...data.messages]);
         });
-    }, []);
+    }, [socket])
 
     // LEAVE ROOM
     const leaveRoom = () => {
         setChat(null);
-        
-        // emit leave with the room
-        socket.emit("leave", {
-            room_id: chat
-        });
     }
 
     return (
@@ -74,7 +87,8 @@ const ChatRoom:React.FC<ChatRoomProp> = ({
         <div>
             <div className="chat__message">
                 {message && message.map((data:any, index:number) => (
-                    <div key={index}>
+                    <div className="box" key={index}>
+                        <h2>{data.user_id.username}</h2>
                         <div>{data.message}</div>
                     </div>
                 ))}
